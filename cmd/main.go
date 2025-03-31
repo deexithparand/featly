@@ -1,7 +1,11 @@
 package main
 
-import "featly/server"
+import (
+	"featly/db"
+	"featly/server"
+)
 
 func main() {
 	server.StartServer()
+	db.CloseDBInstance()
 }
