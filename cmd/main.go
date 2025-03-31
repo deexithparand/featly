@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "featly/server"
 
+func main() {
+	server.StartServer()
 }

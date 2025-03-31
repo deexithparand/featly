@@ -2,6 +2,7 @@ package server
 
 import (
 	"featly/config"
+	"featly/db"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -13,6 +14,7 @@ func StartServer() {
 	config.LoadConfig()
 
 	// load db
+	db.MigrateDB()
 
 	// server setup
 	router := chi.NewRouter()

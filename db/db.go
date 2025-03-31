@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"featly/config"
 	"sync"
+
+	_ "github.com/lib/pq" // PostgreSQL driver
 )
 
 var (
