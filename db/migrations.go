@@ -14,12 +14,12 @@ func MigrateDB() {
 	// Migrations
 	absPath, _ := os.Getwd() // Get working directory
 	migrations_query := utils.ReadFileContents(absPath + "/db/migrations.sql")
-	result, err := db.Exec(migrations_query)
+	_, err := db.Exec(migrations_query)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(result)
+	fmt.Println("Migrations Completed ...")
 
 	CloseDBInstance()
 
