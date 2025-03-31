@@ -1,0 +1,23 @@
+package server
+
+import (
+	"featly/config"
+	"net/http"
+
+	"github.com/go-chi/chi"
+)
+
+func StartServer() {
+
+	// load config
+	config.LoadConfig()
+
+	// load db
+
+	// server setup
+	router := chi.NewRouter()
+	err := http.ListenAndServe(":3000", router)
+	if err != nil {
+		panic(err)
+	}
+}
