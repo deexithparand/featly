@@ -6,6 +6,27 @@ import (
 	"net/http"
 )
 
+type Client struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"client_name"`
+	Subdomain string    `json:"subdomain"`
+	Features  []Feature `json:"features"`
+}
+
+type Feature struct {
+	ID       string `json:"id"`
+	Feature  string `json:"feature"`
+	Upvotes  int    `json:"upvotes"`
+	ClientID string `json:"client_id"`
+	Tags     []Tag  `json:"tags"`
+}
+
+type Tag struct {
+	ID        string `json:"id"`
+	Tag       string `json:"tag"`
+	FeatureID string `json:"feature_id"`
+}
+
 func ListFeatureRequests() {
 	database := db.GetDBInstance()
 
