@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"featly/db"
 	"featly/server"
 	"fmt"
@@ -9,32 +10,39 @@ import (
 	"syscall"
 )
 
-func handleInterruptSignals() os.Signal {
+func waitForInterrupt() context.Context {
 
-	waitForSignal := make(chan os.Signal, 1)
-
-	signals := []os.Signal{
+	// signals to be monitored
+	signals := make(chan os.Signal, 1)
+	signalsToBeHandled := []os.Signal{
 		syscall.SIGINT,  // Ctrl+C
 		syscall.SIGTSTP, // Ctrl+Z
 		syscall.SIGTERM, // Kill signal
 		syscall.SIGHUP,  // Terminal closed
 	}
 
-	signal.Notify(waitForSignal, signals...)
+	ctx, cancel := context.WithCancel(context.Background())
+	signal.Notify(signals, signalsToBeHandled...)
 
-	return <-waitForSignal
+	go func() {
+		<-signals
+		cancel()
+	}()
+
+	return ctx
 }
 
-func receivedInterrupt(signal os.Signal) {
-	fmt.Println("Received Signal : ", signal)
-
-}
-
+// first go routine
 func main() {
-	server.StartServer()
+	ctx := waitForInterrupt()
 
-	gotSignal := handleInterruptSignals()
-	receivedInterrupt(gotSignal)
+	// second goroutine
+	go server.StartServer()
+
+	<-ctx.Done()
+	fmt.Println("Received shutdown signal")
+
+	// graceful shutdown time
 
 	db.CloseDBInstance()
 }
