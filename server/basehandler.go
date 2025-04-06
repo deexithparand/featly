@@ -4,56 +4,61 @@ import (
 	"featly/db"
 	"fmt"
 	"net/http"
+	"os"
 )
 
-type Client struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"client_name"`
-	Subdomain string    `json:"subdomain"`
-	Features  []Feature `json:"features"`
-}
-
-type Feature struct {
-	ID       string `json:"id"`
-	Feature  string `json:"feature"`
-	Upvotes  int    `json:"upvotes"`
-	ClientID string `json:"client_id"`
-	Tags     []Tag  `json:"tags"`
-}
-
-type Tag struct {
-	ID        string `json:"id"`
-	Tag       string `json:"tag"`
-	FeatureID string `json:"feature_id"`
-}
-
 func ListFeatureRequests() {
+
 	database := db.GetDBInstance()
 
-	rows, err := database.Query("SELECT * FROM clients")
+	absPath, _ := os.Getwd()
+
+	featuresDataQuery, err := os.ReadFile(absPath + "/db/features.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	rows, err := database.Query(string(featuresDataQuery))
 	if err != nil {
 		panic(err)
 	}
 	defer rows.Close()
 
+	fmt.Println("Queried Features Data")
+
+	// feature request row
+	var frrSet []FeatureRequestRow
+
 	for rows.Next() {
-		var (
-			id        string
-			subdomain string
+
+		var frr FeatureRequestRow
+
+		err := rows.Scan(
+			&frr.ClientID, &frr.ClientName, &frr.Subdomain,
+			&frr.FeatureID, &frr.FeatureTitle, &frr.FeatureDetail, &frr.UpvoteCount,
+			&frr.TagID, &frr.TagName,
 		)
 
-		err := rows.Scan(&id, &subdomain)
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(id, subdomain)
+		frrSet = append(frrSet, frr)
+
 	}
+
+	for _, frr := range frrSet {
+		fmt.Println(frr.Subdomain, " -> ", frr.FeatureTitle, " -> ", frr.FeatureDetail)
+	}
+
 }
 
 func BaseHandler(w http.ResponseWriter, r *http.Request) {
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Welcome to Featly"))
+
+	ListFeatureRequests()
 
 	// List feature requests
 }
