@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS feature_requests (
 CREATE TABLE IF NOT EXISTS feature_tags (  -- Renamed from 'tags' to 'feature_tags' for specificity
     tag_id VARCHAR(50) NOT NULL UNIQUE PRIMARY KEY,  -- Renamed from 'id'
     tag_name VARCHAR(50) UNIQUE,                     -- Renamed from 'tag' for clarity
+    color VARCHAR(50) UNIQUE,
     
     -- REFERENCE VARIABLES
     feature_id VARCHAR(50) NOT NULL,

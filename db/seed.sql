@@ -17,7 +17,7 @@ VALUES
 (uuid_generate_v4(), 'Export to CSV', 'Export functionality working for excel and not for CSV', 2, (SELECT client_id FROM clients WHERE subdomain = 'bof'));
 
 -- Insert Tags (Retrieve valid `feature_id` dynamically)
-INSERT INTO feature_tags (tag_id, tag_name, feature_id)
+INSERT INTO feature_tags (tag_id, tag_name, color, feature_id)
 VALUES
-(uuid_generate_v4(), 'Pending', (SELECT feature_id FROM feature_requests WHERE feature_title = 'Dark Mode')),
-(uuid_generate_v4(), 'Popular', (SELECT feature_id FROM feature_requests WHERE feature_title = 'Export to CSV'));
+(uuid_generate_v4(), 'Pending', 'violet', (SELECT feature_id FROM feature_requests WHERE feature_title = 'Dark Mode')),
+(uuid_generate_v4(), 'Popular', 'red', (SELECT feature_id FROM feature_requests WHERE feature_title = 'Export to CSV'));
